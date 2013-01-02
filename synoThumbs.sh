@@ -58,7 +58,7 @@ do
   [[ !(-f "$vidDir"/"@eaDir"/"$vidName"/"$Sname") ]] && (convert -size $Msize "$vidDir""/@eaDir/""$vidName""/""$Mname" -auto-orient -quality 60 -resize $Ssize "$vidDir""/@eaDir/""$vidName""/""$Sname"; echo "   -- "$Sname" thumbnail created";)
 done
 # avi files
-for i in `find ${1} \( -type f -a \( -name "*.AVI" -o -name "*.avi" \) ! -path "*@eaDir*" \)`
+for i in `find ${1} \( -type f -a \( -name "*.AVI" -o -name "*.avi" -o -name "*.mp4" -o -name "*.MP4" \) ! -path "*@eaDir*" \)`
 do
   vidName=`echo "${i}" |  awk -F\/ '{print $NF}'`
   vidDir=`echo "${i}" | sed s/"${vidName}"//g | sed s/.$//`
