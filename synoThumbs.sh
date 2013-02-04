@@ -14,11 +14,11 @@
 #	v0.1 - first release
 
 # picture thumbnail filenames & size
-XLname="SYNOPHOTO:THUMB_XL.jpg" ; XLsize="1280x1280";
+Xname="SYNOPHOTO:THUMB_XL.jpg";   Xsize="1280x1280";
 Lname="SYNOPHOTO:THUMB_L.jpg" ;   Lsize="800x800";
 Bname="SYNOPHOTO:THUMB_B.jpg" ;   Bsize="640x640";
 Mname="SYNOPHOTO:THUMB_M.jpg" ;   Msize="320x320";
-Sname="SYNOPHOTO:THUMB_S.jpg" ;   Ssize="160x160";
+Sname="SYNOPHOTO:THUMB_S.jpg" ;   Ssize="120x120";
 
 # video thumbnail filenames & size
 V_Hname="SYNOPHOTO:FILM_H.mp4" ;       V_Hsize="1280x1280";
@@ -36,8 +36,6 @@ makeline; echo " Welcome to synoThumb.sh version $version"; echo " This script c
 # help message
 if [[ $# == 0 ]] ; then makeline; echo " Error: What directory to process?"; echo " Usage: $0 ."; makeline ; exit 1; fi
 
-# TODO: Add timestamps check. Regenerate thumbnails only for updated files (file.updatetime > thumbnail.creationtime)
-
 ############### thumbnails generation for pictures ######################
 #########################################################################
 for i in `find ${1} \( -type f -a \( -name "*.JPG" -o -name "*.jpg" -o -name "*.png" -o -name "*.PNG" -o -name "*.jpeg" -o -name "*.JPEG" \) ! -path "*@eaDir*" \)`
@@ -51,12 +49,14 @@ do
   [[ !(-d "$picDir"/"@eaDir"/"$picName") ]] && (mkdir -p "$picDir""/@eaDir/""$picName"; chmod 775 "$picDir"/"@eaDir"/"$picName";)
 
   # Generate thumbnails if don't exist
-  [[ !(-f "$picDir"/"@eaDir"/"$picName"/"$XLname") ]] && (convert -size $XLsize "$picDir""/""$picName" -resize $XLsize -auto-orient -flatten "$picDir"/"@eaDir"/"$picName"/"$XLname"; echo "   -- "$XLname" thumbnail created";)
-
-  [[ !(-f "$picDir"/"@eaDir"/"$picName"/"$Lname") ]] && (convert -size $Lsize "$picDir""/@eaDir/""$picName""/""$XLname" -auto-orient -resize $Lsize "$picDir""/@eaDir/""$picName""/""$Lname"; echo "   -- "$Lname" thumbnail created";)
-  [[ !(-f "$picDir"/"@eaDir"/"$picName"/"$Bname") ]] && (convert -size $Bsize "$picDir""/@eaDir/""$picName""/""$Lname" -auto-orient -resize $Bsize "$picDir""/@eaDir/""$picName""/""$Bname"; echo "   -- "$Bname" thumbnail created";)
-  [[ !(-f "$picDir"/"@eaDir"/"$picName"/"$Mname") ]] && (convert -size $Msize "$picDir""/@eaDir/""$picName""/""$Bname" -auto-orient -resize $Msize "$picDir""/@eaDir/""$picName""/""$Mname"; echo "   -- "$Mname" thumbnail created";)
-  [[ !(-f "$picDir"/"@eaDir"/"$picName"/"$Sname") ]] && (convert -size $Ssize "$picDir""/@eaDir/""$picName""/""$Mname" -auto-orient -quality 60 -resize $Ssize "$picDir""/@eaDir/""$picName""/""$Sname"; echo "   -- "$Sname" thumbnail created";)
+  # TODO: add quality
+  # TODO: use -scale, -sample instead of -resize
+  # TODO: Add timestamps check. Regenerate thumbnails only for updated files (file.updatetime > thumbnail.creationtime)
+  [[ !(-f "$picDir"/"@eaDir"/"$picName"/"$Xname") ]] && (convert -size $Xsize "$picDir""/""$picName" -resize $Xsize -auto-orient -quality 85 "$picDir""/@eaDir/""$picName""/""$Xname"; echo "  -- "$Xname" thumbnail created";)
+  [[ !(-f "$picDir"/"@eaDir"/"$picName"/"$Lname") ]] && (convert -size $Lsize "$picDir""/""$picName" -resize $Lsize -auto-orient -quality 80 "$picDir""/@eaDir/""$picName""/""$Lname"; echo "  -- "$Lname" thumbnail created";)
+  [[ !(-f "$picDir"/"@eaDir"/"$picName"/"$Bname") ]] && (convert -size $Bsize "$picDir""/""$picName" -resize $Bsize -auto-orient -quality 80 "$picDir""/@eaDir/""$picName""/""$Bname"; echo "  -- "$Bname" thumbnail created";)
+  [[ !(-f "$picDir"/"@eaDir"/"$picName"/"$Mname") ]] && (convert -size $Msize "$picDir""/""$picName" -resize $Msize -auto-orient -quality 50 "$picDir""/@eaDir/""$picName""/""$Mname"; echo "  -- "$Mname" thumbnail created";)
+  [[ !(-f "$picDir"/"@eaDir"/"$picName"/"$Sname") ]] && (convert -size $Ssize "$picDir""/""$picName" -resize $Ssize -auto-orient -quality 50 "$picDir""/@eaDir/""$picName""/""$Sname"; echo "  -- "$Sname" thumbnail created";)
 done
 
 ############### thumbnails generation for videos ########################
@@ -112,7 +112,7 @@ done
 makeline; echo " After uploading the photos&videos, log into DSM and launch reindexing"; echo " (Control Panel --> Media Indexing Service --> Re-index)"; makeline;
 
 # TODO: Ideally there should be a scipt for uploading the files with rsync
-# and launching the diskstation indexer for the uploaded files
+# and launching the diskstation indexer specifially for the uploaded files/folders
 
 IFS=$ORIGIFS;
 exit 0
